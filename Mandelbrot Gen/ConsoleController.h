@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h> 
 #include <iostream>
+#include <chrono>
 #include <string>
 #include <vector>  
 #include <stdlib.h>  

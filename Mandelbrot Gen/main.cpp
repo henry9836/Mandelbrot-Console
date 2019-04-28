@@ -1,4 +1,7 @@
 #include "ConsoleController.h"
+#include "ThreadPool.h"
+#include "WorkQueue.h"
+#include "Task.h"
 
 FractalGrid m_grid;
 
@@ -70,14 +73,14 @@ void CalcFractal(float zoom) {
 }
 
 int main() {
-	bool manual = false;
-	Console_Resize(1500, 900);
+	//Init Chrono
+	using std::chrono::duration_cast;
+	using std::chrono::nanoseconds;
+	typedef std::chrono::high_resolution_clock clock;
 
-	m_grid.Screen.resize(m_grid.ScreenSizeY);
-	for (size_t i = 0; i < m_grid.Screen.size(); i++)
-	{
-		m_grid.Screen.at(i).resize(m_grid.ScreenSizeX);
-	}
+	bool manual = false;
+	float zoom = 15.0;
+	Console_Resize(1500, 900);
 	Console_RainbowWrite("Mandelbrot Generator\n~ Henry Oliver");
 
 	Console_ColoredTEXT("\n\n1. Auto Zoom \n2. Manual Zoom\n Please input a select an option: ", 14);
@@ -93,30 +96,78 @@ int main() {
 		manual = true;
 	}
 
-	Console_Clear();
-
-	Console_RainbowWrite("Generating...\n");
-
-	float zoom = 15.0;
 	
-	while (true) {
-		CalcFractal(zoom);
+
+	//Create a ThreadPool Object capable of holding as many threads as the number of cores
+	ThreadPool& threadPool = ThreadPool::GetInstance();
+	//Initialize the pool
+	threadPool.Initialize();
+	threadPool.Start();
+
+	while (true){
+		//Initialise and reset values
+		//Create Pixels
+		//Creating vector
+		vector<vector<TFractalPixel>> source;
+		//Resize
+		source.resize(m_grid.ScreenSizeY);
+		for (size_t i = 0; i < source.size(); i++)
+		{
+			source.at(i).resize(m_grid.ScreenSizeX);
+		}
+		//Referencing
+		vector<vector<TFractalPixel>>& ref = source;
+		// The main thread writes items to the WorkQueue
+		auto start = clock::now();
+		for (signed row = 0; row < source.size(); row++)
+		{
+			for (signed col = 0; col < source.at(0).size(); col++)
+			{
+				//assign pixel to TaskFractalPixel
+				ref.at(row).at(col).x = col;
+				ref.at(row).at(col).y = row;
+				ref.at(row).at(col).zoom = zoom;
+				threadPool.Submit(CTask(0, ref.at(row).at(col), m_grid.ScreenSizeX, m_grid.ScreenSizeY));
+			
+			}
+		}
+		auto end = clock::now();
+		//Convert
+		m_grid.Screen.resize(m_grid.ScreenSizeY);
+		for (size_t i = 0; i < m_grid.Screen.size(); i++)
+		{
+			m_grid.Screen.at(i).resize(m_grid.ScreenSizeX);
+		}
+		for (size_t m_row = 0; m_row < source.size(); m_row++)
+		{
+			for (size_t m_col = 0; m_col < source.at(0).size(); m_col++)
+			{
+				m_grid.Screen.at(m_row).at(m_col).color = source.at(m_row).at(m_col).color;
+				m_grid.Screen.at(m_row).at(m_col).type = source.at(m_row).at(m_col).type;
+			}
+		}
+
+		//Draw Fractal
+		Console_Clear();
 		DrawConsole(m_grid);
+		
 		if (zoom > 0.5) {
 			cout << endl << "Next step will increase zoom" << endl;
-			zoom = zoom - 0.1;
+			cout << "Current Zoom: " << zoom << endl;
+			cout << "Time Taken: " << duration_cast<nanoseconds>(end - start).count() << "nano seconds" << endl;
+			zoom = zoom - 0.1f;
 		}
 		else {
 			cout << endl << "Next step reset zoom" << endl;
+			cout << "Current Zoom: " << zoom << endl;
+			cout << "Time Taken: " << duration_cast<nanoseconds>(end - start).count() << "nano seconds" << endl;
 			zoom = 15.0;
 		}
 		if (manual) {
 			system("pause");
 		}
-	}
-	cout << "\n";
 
-	system("pause");
+	}
 
 	return 0;
 }
