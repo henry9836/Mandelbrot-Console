@@ -1,10 +1,5 @@
 #include "ConsoleController.h"
 
-/* 
-https://www.coengoedegebure.com/ascii-mandelbrot-animation/ 
-http://jonisalonen.com/2013/lets-draw-the-mandelbrot-set/
-*/
-
 FractalGrid m_grid;
 
 void CalcFractal(float zoom) {
