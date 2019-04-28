@@ -10,10 +10,12 @@ class TFractalPixel {
 public:
 	int x = 0;
 	int y = 0;
-	int color = 9;
+	int color = 6;
 	int type = 1;
 	float zoom = 15;
 	int m_count = 0;
+	int ScreenSizeX = 0;
+	int ScreenSizeY = 0;
 	enum ColorType {
 		Black,
 		Blue,
@@ -39,8 +41,12 @@ public:
 	~CTask();
 	void operator()();
 	int getValue() const;
+
 private:
 	int m_ivalue;
+	TFractalPixel mPixel;
+	TFractalPixel * PixelRef;
+	
 };
 
 #endif

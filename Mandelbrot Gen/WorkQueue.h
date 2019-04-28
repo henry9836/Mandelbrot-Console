@@ -63,6 +63,12 @@ public:
 		return workQ.empty();
 	}
 
+	void clear()
+	{
+		std::lock_guard<std::mutex> _lock(m_WorkQMutex);
+		workQ = std::queue<T>{};
+	}
+
 	
 private:
 	std::queue<T> workQ;

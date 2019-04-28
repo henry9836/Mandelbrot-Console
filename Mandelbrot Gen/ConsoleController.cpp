@@ -126,7 +126,7 @@ void DrawConsole(FractalGrid m_grid) {
 					break;
 				}
 				default: {
-					cout << "COLOR NOT RECONGISED!";
+					cout << "COLOR NOT RECONGISED!" << m_grid.Screen.at(i).at(j).color;
 					break;
 				}
 				}

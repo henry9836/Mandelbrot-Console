@@ -64,6 +64,7 @@ void ThreadPool::Start()
 	{
 		m_workerThreads.push_back(std::thread(&ThreadPool::DoWork, this));
 	}
+	m_bStop = false;
 }
 
 void ThreadPool::Submit(CTask _fItem)
@@ -74,25 +75,29 @@ void ThreadPool::Submit(CTask _fItem)
 void ThreadPool::Stop()
 {
 	m_bStop = true;
+
+	// TEST
+	for (unsigned int i = 0; i < m_iNumberOfThreads; i++)
+	{
+		m_workerThreads[i].join();
+	}
+	m_workerThreads.clear();
+	this->m_pWorkQueue->clear();
+	this->m_aiItemsProcessed = 0;
 }
 
 
 void ThreadPool::DoWork()
 {
 	//Entry point of  a thread.
-	//std::cout << std::endl << "Thread with id " << std::this_thread::get_id() << "starting........" << std::endl;
+	std::cout << " MAGIC INFO: " << std::this_thread::get_id(); //Without this line the whole program hangs
 	while (!m_bStop)
 	{
 		CTask WorkItem;
 		//If there is an item in the queue to be processed; just take it off the q and process it
-		//m_pWorkQueue->blocking_pop(WorkItem);
 		if (m_pWorkQueue->blocking_pop(WorkItem,500))
 		{
-			//std::cout << std::endl << "Thread with id " << std::this_thread::get_id() << " is working on item " << WorkItem.getValue() << " in the work queue" << std::endl;
 			WorkItem();
-			//Sleep to simulate work being done
-			//std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 101));
-			//std::cout << std::endl << "Thread with id " << std::this_thread::get_id() << " finished processing item " << WorkItem.getValue() << std::endl;
 			m_aiItemsProcessed++;
 		}
 		//Else just continue back to the beginning of the while loop.

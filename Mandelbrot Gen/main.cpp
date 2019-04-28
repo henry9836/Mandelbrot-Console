@@ -80,7 +80,7 @@ int main() {
 
 	bool manual = false;
 	float zoom = 15.0;
-	Console_Resize(1500, 900);
+	Console_Resize(1500, 920);
 	Console_RainbowWrite("Mandelbrot Generator\n~ Henry Oliver");
 
 	Console_ColoredTEXT("\n\n1. Auto Zoom \n2. Manual Zoom\n Please input a select an option: ", 14);
@@ -102,9 +102,9 @@ int main() {
 	ThreadPool& threadPool = ThreadPool::GetInstance();
 	//Initialize the pool
 	threadPool.Initialize();
-	threadPool.Start();
-
+	
 	while (true){
+		threadPool.Start();
 		//Initialise and reset values
 		//Create Pixels
 		//Creating vector
@@ -119,9 +119,9 @@ int main() {
 		vector<vector<TFractalPixel>>& ref = source;
 		// The main thread writes items to the WorkQueue
 		auto start = clock::now();
-		for (signed row = 0; row < source.size(); row++)
+		for (unsigned row = 0; row < source.size(); row++)
 		{
-			for (signed col = 0; col < source.at(0).size(); col++)
+			for (unsigned col = 0; col < source.at(0).size(); col++)
 			{
 				//assign pixel to TaskFractalPixel
 				ref.at(row).at(col).x = col;
@@ -131,7 +131,15 @@ int main() {
 			
 			}
 		}
+
+		while (threadPool.getItemsProcessed() != source.size() * source.at(0).size())
+		{
+			// do nothing
+		}
+		threadPool.Stop();
+
 		auto end = clock::now();
+
 		//Convert
 		m_grid.Screen.resize(m_grid.ScreenSizeY);
 		for (size_t i = 0; i < m_grid.Screen.size(); i++)
@@ -148,7 +156,8 @@ int main() {
 		}
 
 		//Draw Fractal
-		Console_Clear();
+		//Console_Clear();
+		Console_gotoXY(0, 0);
 		DrawConsole(m_grid);
 		
 		if (zoom > 0.5) {

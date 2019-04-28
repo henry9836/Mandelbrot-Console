@@ -10,63 +10,12 @@ CTask::CTask()
 }
 
 CTask::CTask(int _value, TFractalPixel& _Pixel, int ScreenSizeX, int ScreenSizeY) {
-
-	if (_Pixel.x != ScreenSizeX || _Pixel.y != ScreenSizeY) {
-		int max_iter = 100;
-		double x = 0, y = 0;
-		double cReal = (_Pixel.x - ScreenSizeX / 2.0)*_Pixel.zoom / ScreenSizeX;
-		double cImag = (_Pixel.y - ScreenSizeY / 2.0)*_Pixel.zoom / ScreenSizeX;
-		while (x * x + y * y <= 4 && _Pixel.m_count < max_iter) {
-			double x_new = x * x - y * y + cReal;
-			y = 2 * x*y + cImag;
-			x = x_new;
-			_Pixel.m_count++;
-		}
-		if (_Pixel.m_count < max_iter) {
-			TFractalPixel::ColorType m_color;
-			switch (_Pixel.m_count)
-			{
-			case 1: {
-				m_color = _Pixel.Grey;
-				break;
-			}
-			case 2: {
-				m_color = _Pixel.White;
-				break;
-			}
-			case 3: {
-				m_color = _Pixel.Aqua;
-				break;
-			}
-			case 4: {
-				m_color = _Pixel.Blue;
-				break;
-			}
-			case 5: {
-				m_color = _Pixel.Green;
-				break;
-			}
-			case 6: {
-				m_color = _Pixel.Yellow;
-				break;
-			}
-			case 7: {
-				m_color = _Pixel.Red;
-				break;
-			}
-			default: {
-				m_color = _Pixel.Pink;
-				break;
-			}
-			}
-			_Pixel.color = m_color;
-			_Pixel.type = _Pixel.Fill;
-		}
-		else {
-			_Pixel.color = _Pixel.Pink;
-			_Pixel.type = _Pixel.Empty;
-		}
-	}
+	PixelRef = &_Pixel;
+	mPixel.x = _Pixel.x;
+	mPixel.y = _Pixel.y;
+	mPixel.ScreenSizeY = ScreenSizeY;
+	mPixel.ScreenSizeX = ScreenSizeX;
+	mPixel.zoom = _Pixel.zoom;
 	
 }
 
@@ -77,6 +26,64 @@ CTask::~CTask()
 
 void CTask::operator()()
 {
+
+	if (mPixel.x != mPixel.ScreenSizeX || mPixel.y != mPixel.ScreenSizeY) {
+		int max_iter = 100;
+		double x = 0, y = 0;
+		double cReal = (mPixel.x - mPixel.ScreenSizeX / 2.0)*mPixel.zoom / mPixel.ScreenSizeX;
+		double cImag = (mPixel.y - mPixel.ScreenSizeY / 2.0)*mPixel.zoom / mPixel.ScreenSizeX;
+		while (x * x + y * y <= 4 && mPixel.m_count < max_iter) {
+			double x_new = x * x - y * y + cReal;
+			y = 2 * x*y + cImag;
+			x = x_new;
+			mPixel.m_count++;
+		}
+		if (mPixel.m_count < max_iter) {
+			TFractalPixel::ColorType m_color;
+			switch (mPixel.m_count)
+			{
+			case 1: {
+				m_color = mPixel.Grey;
+				break;
+			}
+			case 2: {
+				m_color = mPixel.White;
+				break;
+			}
+			case 3: {
+				m_color = mPixel.Aqua;
+				break;
+			}
+			case 4: {
+				m_color = mPixel.Blue;
+				break;
+			}
+			case 5: {
+				m_color = mPixel.Green;
+				break;
+			}
+			case 6: {
+				m_color = mPixel.Yellow;
+				break;
+			}
+			case 7: {
+				m_color = mPixel.Red;
+				break;
+			}
+			default: {
+				m_color = mPixel.Pink;
+				break;
+			}
+			}
+			PixelRef->color = m_color;
+			PixelRef->type = mPixel.Fill;
+		}
+		else {
+			PixelRef->color = mPixel.Black;
+			PixelRef->type = mPixel.Empty;
+		}
+	}
+
 	//Sleep to simulate work being done
 	//std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 101));
 }
