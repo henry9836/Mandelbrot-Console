@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Mandelbrot Gen", "Mandelbrot Gen\Mandelbrot Gen.vcxproj", "{D6C8E87A-9E2C-4965-8B12-AD5ED4E88E54}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D6C8E87A-9E2C-4965-8B12-AD5ED4E88E54}.Debug|x64.ActiveCfg = Debug|x64
+		{D6C8E87A-9E2C-4965-8B12-AD5ED4E88E54}.Debug|x64.Build.0 = Debug|x64
+		{D6C8E87A-9E2C-4965-8B12-AD5ED4E88E54}.Debug|x86.ActiveCfg = Debug|Win32
+		{D6C8E87A-9E2C-4965-8B12-AD5ED4E88E54}.Debug|x86.Build.0 = Debug|Win32
+		{D6C8E87A-9E2C-4965-8B12-AD5ED4E88E54}.Release|x64.ActiveCfg = Release|x64
+		{D6C8E87A-9E2C-4965-8B12-AD5ED4E88E54}.Release|x64.Build.0 = Release|x64
+		{D6C8E87A-9E2C-4965-8B12-AD5ED4E88E54}.Release|x86.ActiveCfg = Release|Win32
+		{D6C8E87A-9E2C-4965-8B12-AD5ED4E88E54}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E8092A30-127A-4D45-8296-CEA7FDA4386A}
+	EndGlobalSection
+EndGlobal
