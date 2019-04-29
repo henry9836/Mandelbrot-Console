@@ -21,6 +21,16 @@ void Console_Clear() { //Clear console window
 	Console_gotoXY(0, 0);
 }
 
+void Console_FontSize(int x, int y) {
+	HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+	PCONSOLE_FONT_INFOEX lpConsoleCurrentFontEx = new CONSOLE_FONT_INFOEX();
+	lpConsoleCurrentFontEx->cbSize = sizeof(CONSOLE_FONT_INFOEX);
+	GetCurrentConsoleFontEx(out, 0, lpConsoleCurrentFontEx);
+	lpConsoleCurrentFontEx->dwFontSize.X = x;
+	lpConsoleCurrentFontEx->dwFontSize.Y = y;
+	SetCurrentConsoleFontEx(out, 0, lpConsoleCurrentFontEx);
+}
+
 /*
  
 COLOR CODES:

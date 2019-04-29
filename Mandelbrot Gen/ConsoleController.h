@@ -18,8 +18,8 @@ public:
 
 class FractalGrid {
 public:
-	const int ScreenSizeX = 170;
-	const int ScreenSizeY = 50;
+	int ScreenSizeX = 1000;
+	int ScreenSizeY = 300;
 	vector<vector<FractalPixel>> Screen;
 	enum ColorType {
 		Black,
@@ -43,6 +43,8 @@ void Console_gotoXY(int x, int y);
 void Console_Resize(int x, int y);
 
 void Console_Clear();
+
+void Console_FontSize(int a, int b);
 
 void Console_ColoredTEXT(string m_word, int m_color);
 

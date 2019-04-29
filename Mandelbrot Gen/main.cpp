@@ -2,75 +2,9 @@
 #include "ThreadPool.h"
 #include "WorkQueue.h"
 #include "Task.h"
+#include <fstream>
 
 FractalGrid m_grid;
-
-void CalcFractal(float zoom) {
-	for (signed row = 0; row < m_grid.ScreenSizeY; row++)
-	{
-		for (signed col = 0; col < m_grid.ScreenSizeX; col++)
-		{
-			if (col == m_grid.ScreenSizeX || row == m_grid.ScreenSizeY) {
-				break;
-			}
-			int count = 0;
-			int max_iter = 100;
-			double x = 0, y = 0;
-			double cReal = (col - m_grid.ScreenSizeX / 2.0)*zoom / m_grid.ScreenSizeX;
-			double cImag = (row - m_grid.ScreenSizeY / 2.0)*zoom / m_grid.ScreenSizeX;
-			while (x * x + y * y <= 4 && count < max_iter) {
-				double x_new = x * x - y * y + cReal;
-				y = 2 * x*y + cImag;
-				x = x_new;
-				count++;
-			}
-			if (count < max_iter) {
-				FractalGrid::ColorType m_color;
-				switch (count)
-				{
-				case 1: {
-					m_color = m_grid.Grey;
-					break;
-				}
-				case 2: {
-					m_color = m_grid.White;
-					break;
-				}
-				case 3: {
-					m_color = m_grid.Aqua;
-					break;
-				}
-				case 4: {
-					m_color = m_grid.Blue;
-					break;
-				}
-				case 5: {
-					m_color = m_grid.Green;
-					break;
-				}
-				case 6: {
-					m_color = m_grid.Yellow;
-					break;
-				}
-				case 7: {
-					m_color = m_grid.Red;
-					break;
-				}
-				default: {
-					m_color = m_grid.Pink;
-					break;
-				}
-				}
-				m_grid.Screen.at(row).at(col).color = m_color;
-				m_grid.Screen.at(row).at(col).type = m_grid.Fill;
-			}
-			else {
-				m_grid.Screen.at(row).at(col).color = m_grid.Black;
-				m_grid.Screen.at(row).at(col).type = m_grid.Empty;
-			}
-		}
-	}
-}
 
 int main() {
 	//Init Chrono
@@ -80,7 +14,8 @@ int main() {
 
 	bool manual = false;
 	float zoom = 15.0;
-	Console_Resize(1500, 920);
+	Console_Resize(700, 400);
+	Console_FontSize(24, 24);
 	Console_RainbowWrite("Mandelbrot Generator\n~ Henry Oliver");
 
 	Console_ColoredTEXT("\n\n1. Auto Zoom \n2. Manual Zoom\n Please input a select an option: ", 14);
@@ -96,6 +31,62 @@ int main() {
 		manual = true;
 	}
 
+	cout << "READING CONFIG FILE...." << endl;
+
+	ifstream configFile("CONFIG.txt");
+
+	int m_Line = 0;
+	int fx = 10;
+	int fy = 10;
+	int sx = 2700;
+	int sy = 500;
+	string str_Line = "";
+
+	while (m_Line != 13 && getline(configFile, str_Line))
+	{
+		//cout << str_Line;
+		switch (m_Line)
+		{
+		case 1: {
+			m_grid.ScreenSizeX = atoi(str_Line.c_str());
+			break;
+		}
+		case 3: {
+			m_grid.ScreenSizeY = atoi(str_Line.c_str());
+			break;
+		}
+		case 5: {
+			fx = atoi(str_Line.c_str());
+			break;
+		}
+		case 7: {
+			fy = atoi(str_Line.c_str());
+			break;
+		}
+		case 9: {
+			zoom = atof(str_Line.c_str());
+			break;
+		}
+		case 11: {
+			sy = atof(str_Line.c_str());
+			break;
+		}
+		case 13: {
+			sx = atof(str_Line.c_str());
+			break;
+		}
+		default:
+			break;
+		}
+		m_Line++;
+	}
+
+	configFile.close();
+
+	system("pause");
+
+	Console_FontSize(fx, fy);
+	Console_Resize(sx, sy);
 	
 
 	//Create a ThreadPool Object capable of holding as many threads as the number of cores
@@ -160,19 +151,23 @@ int main() {
 		Console_gotoXY(0, 0);
 		DrawConsole(m_grid);
 		
-		if (zoom > 0.5) {
-			cout << endl << "Next step will increase zoom" << endl;
-			cout << "Current Zoom: " << zoom << endl;
-			cout << "Time Taken: " << duration_cast<nanoseconds>(end - start).count() << "nano seconds" << endl;
-			zoom = zoom - 0.1f;
+		if (!manual) {
+			if (zoom > 0.5) {
+				cout << endl << "Next step will increase zoom" << endl;
+				cout << "Current Zoom: " << zoom << endl;
+				cout << "Time Taken: " << duration_cast<nanoseconds>(end - start).count() << "nano seconds" << endl;
+				zoom = zoom - 0.1f;
+			}
+			else {
+				cout << endl << "Next step reset zoom" << endl;
+				cout << "Current Zoom: " << zoom << endl;
+				cout << "Time Taken: " << duration_cast<nanoseconds>(end - start).count() << "nano seconds" << endl;
+				zoom = 15.0;
+			}
 		}
 		else {
-			cout << endl << "Next step reset zoom" << endl;
 			cout << "Current Zoom: " << zoom << endl;
 			cout << "Time Taken: " << duration_cast<nanoseconds>(end - start).count() << "nano seconds" << endl;
-			zoom = 15.0;
-		}
-		if (manual) {
 			system("pause");
 		}
 
