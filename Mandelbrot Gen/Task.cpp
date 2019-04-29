@@ -1,5 +1,6 @@
 #include <iostream>
 #include <thread>
+#include <mutex>
 
 #include "Task.h"
 
@@ -76,16 +77,15 @@ void CTask::operator()()
 			}
 			}
 			PixelRef->color = m_color;
+			mPixel.color = m_color;
 			PixelRef->type = mPixel.Fill;
 		}
 		else {
 			PixelRef->color = mPixel.Black;
+			mPixel.color = mPixel.Black;
 			PixelRef->type = mPixel.Empty;
 		}
 	}
-
-	//Sleep to simulate work being done
-	//std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 101));
 }
 
 int CTask::getValue() const

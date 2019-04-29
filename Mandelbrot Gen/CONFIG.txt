@@ -1,20 +1,28 @@
 [RENDERSCREENSIZEX]
-350
+1280
 [RENDERSCREENSIZEY]
-55
+720
 [RENDERFONTSIZEX]
-15
+5
 [RENDERFONTSIZEY]
-15
+5
 [ZOOM]
-13.0
+13
 [SCREENSIZEY]
 950
 [SCREENSIZEX]
 2700
+[THREAD NUMBER]
+1
 ###########################
 COMMENTS
 ###########################
+Thread number:
+-1 : use hardware_concurreny to get num of threads
+1+ : use specified amount of threads
+X > hardware_concurreny : use hardware_concurreny to get num of threads
+
+
 Insane Settings:
 -----------------
 |4K|
@@ -64,3 +72,5 @@ Recommended Settings:
 950
 [SCREENSIZEX]
 2700
+[THREAD NUMBER]
+-1

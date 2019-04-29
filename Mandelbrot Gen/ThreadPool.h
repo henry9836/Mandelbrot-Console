@@ -25,7 +25,7 @@ public:
 	void Start();
 	void Stop();
 	std::atomic_int& getItemsProcessed();
-
+	unsigned int totalThreads;
 private:
 	// Make the threadpool a singleton
 	ThreadPool();

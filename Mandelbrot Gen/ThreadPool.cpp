@@ -2,6 +2,8 @@
 #include <iostream>
 #include <thread>
 #include <functional>
+#include <string>
+#include <fstream>
 
 //Local Includes
 #include "WorkQueue.h"
@@ -15,7 +17,33 @@ ThreadPool* ThreadPool::s_pThreadPool = nullptr;
 
 ThreadPool::ThreadPool()
 {
-	m_iNumberOfThreads = std::thread::hardware_concurrency();
+	std::ifstream configFile("CONFIG.txt");
+	int m_Line = 0;
+	std::string str_Line;
+	int numofT = 0;
+	while (m_Line != 16 && std::getline(configFile, str_Line))
+	{
+		//cout << str_Line;
+		switch (m_Line)
+		{
+		case 15: {
+			numofT = atof(str_Line.c_str());
+			break;
+		}
+		default:
+			break;
+		}
+		m_Line++;
+	}
+
+	if (numofT == -1 || numofT > std::thread::hardware_concurrency()) {
+		m_iNumberOfThreads = std::thread::hardware_concurrency();
+	}
+	else {
+		m_iNumberOfThreads = numofT;
+	}
+	totalThreads = m_iNumberOfThreads;
+	
 }
 
 

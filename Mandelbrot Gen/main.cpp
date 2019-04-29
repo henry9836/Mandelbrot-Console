@@ -9,7 +9,7 @@ FractalGrid m_grid;
 int main() {
 	//Init Chrono
 	using std::chrono::duration_cast;
-	using std::chrono::nanoseconds;
+	using std::chrono::milliseconds;
 	typedef std::chrono::high_resolution_clock clock;
 
 	bool manual = false;
@@ -125,7 +125,7 @@ int main() {
 
 		while (threadPool.getItemsProcessed() != source.size() * source.at(0).size())
 		{
-			// do nothing
+			// do nothing wait till threads are all done
 		}
 		threadPool.Stop();
 
@@ -155,21 +155,34 @@ int main() {
 			if (zoom > 0.5) {
 				cout << endl << "Next step will increase zoom" << endl;
 				cout << "Current Zoom: " << zoom << endl;
-				cout << "Time Taken: " << duration_cast<nanoseconds>(end - start).count() << "nano seconds" << endl;
+				cout << "Time Taken: " << duration_cast<milliseconds>(end - start).count() << "nano seconds" << endl;
 				zoom = zoom - 0.1f;
 			}
 			else {
 				cout << endl << "Next step reset zoom" << endl;
 				cout << "Current Zoom: " << zoom << endl;
-				cout << "Time Taken: " << duration_cast<nanoseconds>(end - start).count() << "nano seconds" << endl;
+				cout << "Time Taken: " << duration_cast<milliseconds>(end - start).count() << "nano seconds" << endl;
 				zoom = 15.0;
 			}
 		}
 		else {
 			cout << "Current Zoom: " << zoom << endl;
-			cout << "Time Taken: " << duration_cast<nanoseconds>(end - start).count() << "nano seconds" << endl;
+			cout << "Time Taken: " << duration_cast<milliseconds>(end - start).count() << "nano seconds" << endl;
 			system("pause");
 		}
+
+		//OUTPUT TO REPORT TO A FILE
+
+		std::ofstream reportFile;
+
+		int fx = 10;
+		int fy = 10;
+		int sx = 2700;
+		int sy = 500;
+
+		reportFile.open("LOG.txt", std::ios_base::app);
+		reportFile << "\n\n -[ " << m_grid.ScreenSizeX << "x" << m_grid.ScreenSizeY << " Resolution ]-" << "\nThreads: " << threadPool.totalThreads << "\nTime Taken: " << duration_cast<milliseconds>(end - start).count() << "ms\n Zoom: " << zoom << "\n==========================================================================================================";
+
 
 	}
 

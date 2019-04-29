@@ -145,7 +145,7 @@ void DrawConsole(FractalGrid m_grid) {
 			else {
 				Console_ColoredTEXT(" ", 15);
 			}
-			
+
 		}
 	}
 }
