@@ -83,8 +83,6 @@ int main() {
 
 	configFile.close();
 
-	system("pause");
-
 	Console_FontSize(fx, fy);
 	Console_Resize(sx, sy);
 	
@@ -99,31 +97,31 @@ int main() {
 		//Initialise and reset values
 		//Create Pixels
 		//Creating vector
-		vector<vector<TFractalPixel>> source;
+		vector<TFractalRow> source;
 		//Resize
 		source.resize(m_grid.ScreenSizeY);
 		for (size_t i = 0; i < source.size(); i++)
 		{
-			source.at(i).resize(m_grid.ScreenSizeX);
+			source.at(i).m_Row.resize(m_grid.ScreenSizeX);
 		}
 		//Referencing
-		vector<vector<TFractalPixel>>& ref = source;
+		vector<TFractalRow>& ref = source;
 		// The main thread writes items to the WorkQueue
 		auto start = clock::now();
 		for (unsigned row = 0; row < source.size(); row++)
 		{
-			for (unsigned col = 0; col < source.at(0).size(); col++)
+			for (unsigned col = 0; col < source.at(0).m_Row.size(); col++)
 			{
 				//assign pixel to TaskFractalPixel
-				ref.at(row).at(col).x = col;
-				ref.at(row).at(col).y = row;
-				ref.at(row).at(col).zoom = zoom;
-				threadPool.Submit(CTask(0, ref.at(row).at(col), m_grid.ScreenSizeX, m_grid.ScreenSizeY));
+				ref.at(row).m_Row.at(col).x = col;
+				ref.at(row).m_Row.at(col).y = row;
+				ref.at(row).m_Row.at(col).zoom = zoom;
+				threadPool.Submit(CTask(0, ref.at(row), m_grid.ScreenSizeX, m_grid.ScreenSizeY));
 			
 			}
 		}
 
-		while (threadPool.getItemsProcessed() != source.size() * source.at(0).size())
+		while (threadPool.getItemsProcessed() != source.size() * source.at(0).m_Row.size())
 		{
 			// do nothing wait till threads are all done
 		}
@@ -139,10 +137,10 @@ int main() {
 		}
 		for (size_t m_row = 0; m_row < source.size(); m_row++)
 		{
-			for (size_t m_col = 0; m_col < source.at(0).size(); m_col++)
+			for (size_t m_col = 0; m_col < source.at(0).m_Row.size(); m_col++)
 			{
-				m_grid.Screen.at(m_row).at(m_col).color = source.at(m_row).at(m_col).color;
-				m_grid.Screen.at(m_row).at(m_col).type = source.at(m_row).at(m_col).type;
+				m_grid.Screen.at(m_row).at(m_col).color = source.at(m_row).m_Row.at(m_col).color;
+				m_grid.Screen.at(m_row).at(m_col).type = source.at(m_row).m_Row.at(m_col).type;
 			}
 		}
 
@@ -155,19 +153,19 @@ int main() {
 			if (zoom > 0.5) {
 				cout << endl << "Next step will increase zoom" << endl;
 				cout << "Current Zoom: " << zoom << endl;
-				cout << "Time Taken: " << duration_cast<milliseconds>(end - start).count() << "nano seconds" << endl;
+				cout << "Time Taken: " << duration_cast<milliseconds>(end - start).count() << "ms" << endl;
 				zoom = zoom - 0.1f;
 			}
 			else {
 				cout << endl << "Next step reset zoom" << endl;
 				cout << "Current Zoom: " << zoom << endl;
-				cout << "Time Taken: " << duration_cast<milliseconds>(end - start).count() << "nano seconds" << endl;
+				cout << "Time Taken: " << duration_cast<milliseconds>(end - start).count() << "ms" << endl;
 				zoom = 15.0;
 			}
 		}
 		else {
 			cout << "Current Zoom: " << zoom << endl;
-			cout << "Time Taken: " << duration_cast<milliseconds>(end - start).count() << "nano seconds" << endl;
+			cout << "Time Taken: " << duration_cast<milliseconds>(end - start).count() << "ms" << endl;
 			system("pause");
 		}
 
@@ -181,7 +179,7 @@ int main() {
 		int sy = 500;
 
 		reportFile.open("LOG.txt", std::ios_base::app);
-		reportFile << "\n\n -[ " << m_grid.ScreenSizeX << "x" << m_grid.ScreenSizeY << " Resolution ]-" << "\nThreads: " << threadPool.totalThreads << "\nTime Taken: " << duration_cast<milliseconds>(end - start).count() << "ms\n Zoom: " << zoom << "\n==========================================================================================================";
+		reportFile << "\n\n -[ " << m_grid.ScreenSizeX << "x" << m_grid.ScreenSizeY << " Resolution ]-" << "\nThreads: " << threadPool.totalThreads << "\nTime Taken: " << duration_cast<milliseconds>(end - start).count() << "ms\nZoom: " << zoom << "\n==========================================================================================================";
 
 
 	}

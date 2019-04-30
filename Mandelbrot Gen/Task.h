@@ -14,8 +14,6 @@ public:
 	int type = 1;
 	float zoom = 15;
 	int m_count = 0;
-	int ScreenSizeX = 0;
-	int ScreenSizeY = 0;
 	enum ColorType {
 		Black,
 		Blue,
@@ -33,11 +31,20 @@ public:
 	};
 };
 
+class TFractalRow {
+public:
+	std::vector<TFractalPixel> m_Row;
+	int ScreenSizeX = 0;
+	int ScreenSizeY = 0;
+};
+
+
+
 class CTask
 {
 public:
 	CTask();
-	CTask(int _value, TFractalPixel& _Pixel, int ScreenSizeX, int ScreenSizeY);
+	CTask(int _value, TFractalRow& _Row, int ScreenSizeX, int ScreenSizeY);
 	~CTask();
 	void operator()();
 	int getValue() const;
@@ -46,7 +53,7 @@ private:
 	int m_ivalue;
 	TFractalPixel mPixel;
 	TFractalPixel * PixelRef;
-	
+	TFractalRow * RowRef;
 };
 
 #endif
