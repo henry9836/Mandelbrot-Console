@@ -64,15 +64,15 @@ int main() {
 			break;
 		}
 		case 9: {
-			zoom = atof(str_Line.c_str());
+			zoom = static_cast<float>(atof(str_Line.c_str()));
 			break;
 		}
 		case 11: {
-			sy = atof(str_Line.c_str());
+			sy = atoi(str_Line.c_str());
 			break;
 		}
 		case 13: {
-			sx = atof(str_Line.c_str());
+			sx = atoi(str_Line.c_str());
 			break;
 		}
 		default:
@@ -117,7 +117,6 @@ int main() {
 				ref.at(row).m_Row.at(col).y = row;
 				ref.at(row).m_Row.at(col).zoom = zoom;
 				threadPool.Submit(CTask(0, ref.at(row), m_grid.ScreenSizeX, m_grid.ScreenSizeY));
-			
 			}
 		}
 

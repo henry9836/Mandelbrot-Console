@@ -12,16 +12,9 @@ CTask::CTask()
 
 CTask::CTask(int _value, TFractalRow& _Row, int ScreenSizeX, int ScreenSizeY) {
 	RowRef = &_Row;
+	mPixel.zoom = RowRef->m_Row.at(0).zoom;
 	RowRef->ScreenSizeX = ScreenSizeX;
 	RowRef->ScreenSizeY = ScreenSizeY;
-	/*
-	PixelRef = &_Row.m_Row.at(0);
-	mPixel.x = PixelRef.x;
-	mPixel.y = _Pixel.y;
-	mPixel.ScreenSizeY = ScreenSizeY;
-	mPixel.ScreenSizeX = ScreenSizeX;
-	mPixel.zoom = _Pixel.zoom;*/
-	
 }
 
 CTask::~CTask()

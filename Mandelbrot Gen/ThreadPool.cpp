@@ -27,7 +27,7 @@ ThreadPool::ThreadPool()
 		switch (m_Line)
 		{
 		case 15: {
-			numofT = atof(str_Line.c_str());
+			numofT = atoi(str_Line.c_str());
 			break;
 		}
 		default:
@@ -36,7 +36,7 @@ ThreadPool::ThreadPool()
 		m_Line++;
 	}
 
-	if (numofT == -1 || numofT > std::thread::hardware_concurrency()) {
+	if (numofT == -1 || numofT > static_cast<int>(std::thread::hardware_concurrency())) {
 		m_iNumberOfThreads = std::thread::hardware_concurrency();
 	}
 	else {
